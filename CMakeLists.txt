@@ -4,14 +4,6 @@ project(Test)
 set(CMAKE_CXX_STANDARD 23)
 
 add_executable(Test main.cpp)
-target_compile_options(Test PRIVATE
-        -fsanitize=address
-        -fno-omit-frame-pointer
-)
-
-target_link_options(Test PRIVATE
-        -fsanitize=address
-)
 
 add_executable(StorageDuration storage_duration.cpp)
 add_executable(padding padding.cpp)
@@ -24,3 +16,4 @@ add_executable(Placement_new 1.8_placement_new.cpp)
 add_executable(False_Sharing 1.10_false_sharing.cpp)
 add_executable(Virtual_Memory 1.11_virtual_memory.cpp)
 add_executable(RAII 2.1_RAII.cpp)
+add_executable(RO5 2.2_Ruleof5.cpp)

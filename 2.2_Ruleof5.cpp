@@ -86,7 +86,7 @@ int main() {
         RawFive b = std::move(a);    // steal: no allocation at all
         std::cout << "  a is now an empty husk (n=0), b owns the 5 ints\n";
         RawFive c(2);
-        c = std::move(b);            // move-assign: c frees its 2, steals b's 5
+        c = b;            // move-assign: c frees its 2, steals b's 5
     }
     std::cout << "\n=== 4. Rule of Zero: same job, zero special members ===\n";
     {

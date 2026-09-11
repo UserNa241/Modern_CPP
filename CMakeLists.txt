@@ -6,6 +6,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 add_compile_options(/fsanitize=address /Zi)
 add_link_options(/INCREMENTAL:NO)
+add_compile_options(/EHsc)
 
 ## Global compiler configuration
 #if(MSVC)
@@ -55,3 +56,4 @@ add_executable(2.05_mapped_region 2.5_mapped_region.cpp)
 add_executable(2.06_scopeguard 2.6_scope_guard.cpp)
 add_executable(2.07_mutexwrapper 2.7_mutex_wrapper.cpp)
 add_executable(2.08_RAIIxmove 2.8_RAIIxmove.cpp)
+add_executable(2.09_partial_const 2.9_partial_construction.cpp)

@@ -1,57 +1,78 @@
-// lesson_2_7_stress_test.cpp
-// build: g++ -std=c++20 -Wall -Wextra -Wpedantic -Werror -pthread lesson_2_7_stress_test.cpp -o stress && ./stress
 #include <iostream>
-#include <mutex>
-#include <thread>
-#include <vector>
-#include <string>
-#include <random>
+#include <memory>
+#include <stdexcept>
 
-std::mutex mt;
+class FilePtr {
+	std::FILE* f_ = nullptr;
 
-// 1. The Account Structure
-struct Account {
-	std::string name;
-	int balance;
+public:
+	explicit FilePtr(const char* path, const char* mode)
+		: f_(std::fopen(path, mode)) {}
 
-	Account(std::string n, int b) : name(std::move(n)), balance(b) {}
-};
-
-struct Bank {
-	std::vector<Account> accounts;
-	std::mutex mtx;
-
-	Bank() : accounts{ {"Alice", 1000}, {"Bob", 1000} } {}
-
-	void transfer(int from_idx, int to_idx, int amount) {
-		// Lock the ENTIRE bank. No deadlocks possible because there is only 1 lock!
-		std::lock_guard<std::mutex> lock(mtx);
-		accounts[from_idx].balance -= amount;
-		accounts[to_idx].balance += amount;
-	}
-};
-
-int main() {
-
-	std::vector<std::unique_ptr<Account>> bank;
-
-	Bank my_bank;
-
-	{
-		std::jthread t1([&] {
-			for (int i = 0; i < 100; i++) {
-				my_bank.transfer(0,1,5);
-			}
-		});
-
-		std::jthread t2([&] {
-			for (int i = 0; i < 100; i++) {
-				my_bank.transfer(1,0,5);
-			}
-		});
+	// Destructor (unchanged)
+	~FilePtr() {
+		if (f_) std::fclose(f_);
 	}
 
-	std::cout << "Alice: " << my_bank.accounts[0].balance << '\n';
-	std::cout << "Bob: " << my_bank.accounts[1].balance << '\n';
+	// Move constructor
+	FilePtr(FilePtr&& other) noexcept : f_(other.f_) {
+		other.f_ = nullptr;                     // source becomes empty
+	}
+
+	// Move assignment
+	FilePtr& operator=(FilePtr&& other) noexcept {
+		if (this != &other) {
+			if (f_) std::fclose(f_);           // release current resource
+			f_ = other.f_;                     // steal
+			other.f_ = nullptr;                // empty the source
+		}
+		return *this;
+	}
+
+	// Copy operations remain deleted
+	FilePtr(const FilePtr&) = delete;
+	FilePtr& operator=(const FilePtr&) = delete;
+
+	std::FILE* get() const { return f_; }
+};
+
+class Token {
+	bool valid_;
+
+public:
+	Token(bool valid) : valid_(valid) {
+		if (!valid_) {
+			throw std::runtime_error("Exception Triggered");
+		}
+	}
+
+	~Token() = default;
+};
+
+struct Session {
+	FilePtr log_;
+	std::unique_ptr<int[]> buf_;
+	Token auth_;
+
+public:
+	Session(std::size_t n, const char* logfile, bool valid) :
+		log_(logfile,"w"), buf_(std::make_unique<int[]>(n)), auth_(valid) {}
+
+	std::FILE* log() const {return log_.get();}
+};
+
+void write_log(Session& s, const char* msg) {
+	std::fputs(msg, s.log_.get());
+}
+
+int main()
+{
+	try {
+		Session s(10,"file.txt",true);
+		write_log(s, "Hello\n");
+	} catch (std::exception& e) {
+		std::cout << e.what() << '\n';
+	}
+
 	return 0;
 }

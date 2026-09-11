@@ -38,6 +38,8 @@ add_executable(Test main.cpp)
 #        -fsanitize=address
 #)
 
+add_executable(test_pool test_pool_alloc.cpp)
+
 add_executable(1.01_storage_duration 1.1_storage_duration.cpp)
 add_executable(1.02_padding 1.2_padding.cpp)
 add_executable(1.03_lifetime 1.3_object_lifetime.cpp)
@@ -57,3 +59,4 @@ add_executable(2.06_scopeguard 2.6_scope_guard.cpp)
 add_executable(2.07_mutexwrapper 2.7_mutex_wrapper.cpp)
 add_executable(2.08_RAIIxmove 2.8_RAIIxmove.cpp)
 add_executable(2.09_partial_const 2.9_partial_construction.cpp)
+add_executable(3.01_unique_ptr 3.1_unique_ptr.cpp)

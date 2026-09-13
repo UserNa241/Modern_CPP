@@ -1,66 +1,58 @@
 #include <iostream>
+#include <memory>
+#include <string>
 
-class Pool {
-	std::unique_ptr<int[]> data_;
-	std::unique_ptr<bool[]> in_use_;
-	std::size_t size_;
-	std::size_t active_;
+struct Node {
+	std::string name_;
+	std::shared_ptr<Node> next;
+	std::weak_ptr<Node> prev;
 
-	void release(int* ptr) {
-		int index = ptr - data_.get();
-		in_use_[index] = false;
-		--active_;
+	explicit Node(const std::string name) : name_(std::move(name)) {
+		std::cout << "	+Node "<< name_ <<'\n';
 	}
 
-public:
-	struct Releaser {
-		Pool *parent;
-
-		void operator() (int* ptr) const {
-			if (parent && ptr) {
-				parent -> release(ptr);
-			}
-		}
-	};
-	using Handle = std::unique_ptr<int, Releaser>;
-
-	Pool(int N) :	data_(std::make_unique<int[]>(N)),
-					in_use_(std::make_unique<bool[]>(N)),
-					size_(N), active_(0) {}
-
-	Handle acquire() {
-		for (std::size_t i = 0; i < size_; ++i) {
-			if (!in_use_[i]) {
-				in_use_[i] = true;
-				++active_;
-				return {&data_[i],Releaser{this}};
-			}
-		}
-		throw std::runtime_error("Pool is full");
+	~Node() {
+		std::cout << " -Node "<< name_ << '\n';
 	}
 
-	int active_count() const {
-		return active_;
-	}
 
 };
 
 int main() {
 
-	Pool pool(10);
+	auto a = std::make_shared<Node>("A");
+	auto b = std::make_shared<Node>("B");
+	auto c = std::make_shared<Node>("C");
 
-	auto p1 = pool.acquire();
-	auto p2 = pool.acquire();
-	auto p3 = pool.acquire();
+	a -> next = b;
 
-	std::cout << pool.active_count() << '\n';
-	{
-		auto p4 = pool.acquire();
-		std::cout << "Count: " << pool.active_count() << '\n';
+	b -> next = c;
+	b -> prev = a;
+
+	c -> prev = b;
+
+	std::cout << "\nUse counts before reset:\n";
+	std::cout << "a:	" << a.use_count() << '\n';
+	std::cout << "b:	" << b.use_count() << '\n';
+	std::cout << "c:	" << c.use_count() << '\n';
+
+	for (auto p = a; p; p = p->next) {
+		std::cout << p->name_ << '\n';
 	}
 
-	auto p4 = pool.acquire();
-	std::cout << "Count: " << pool.active_count() << '\n';
+	for (auto p = c; p; ) {
+		std::cout << p->name_ << '\n';
+		p = p->prev.lock();
+	}
+
+	a.reset();
+	std::cout << "\nUse counts after reset:\n";
+	std::cout << "a:	" << a.use_count() << '\n';
+	std::cout << "b:	" << b.use_count() << '\n';
+	std::cout << "c:	" << c.use_count() << '\n';
+
+	b.reset();
+	c.reset();
 
 	return 0;
 }

@@ -14,7 +14,6 @@ struct FileCloser { // a functor: stateless, zero-size
 		if (f) std::fclose(f);
 	}
 };
-
 using CFile = std::unique_ptr<std::FILE, FileCloser>;
 
 // ---------- deleter #4: STATEFUL lambda ----------

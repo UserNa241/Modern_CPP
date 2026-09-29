@@ -75,3 +75,14 @@ else()
 endif()
 find_package(Threads REQUIRED)
 target_link_libraries(3.05_my_sharedptr PRIVATE Threads::Threads)
+
+
+add_executable(3.06_my_weakptr 3.6_my_weak_ptr.cpp)
+if (MSVC)
+    target_compile_options(3.06_my_weakptr PRIVATE /W4 /WX)
+else ()
+    target_compile_options(3.06_my_weakptr PRIVATE -Wall -Wextra -Wpedantic -Werror)
+endif ()
+find_package(Threads REQUIRED)
+target_link_libraries(3.06_my_weakptr PRIVATE Threads::Threads)
+

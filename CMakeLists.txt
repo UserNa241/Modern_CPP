@@ -3,10 +3,16 @@ project(Test)
 
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
 
-add_compile_options(/fsanitize=address /Zi)
-add_link_options(/INCREMENTAL:NO)
-add_compile_options(/EHsc)
+if (MSVC)
+    add_compile_options(/W4 /WX /EHsc)
+else ()
+    add_compile_options(-Wall -Wextra -Wpedantic -Werror)
+endif ()
+find_package(Threads REQUIRED)
+link_libraries(Threads::Threads)
+
 
 ## Global compiler configuration
 #if(MSVC)
@@ -30,14 +36,6 @@ add_compile_options(/EHsc)
 
 # Define your executables (ASan is now automatically inherited globally)
 add_executable(Test main.cpp)
-#target_compile_options(Test PRIVATE
-#        -fsanitize=address
-#        -g
-#)
-#target_link_options(Test PRIVATE
-#        -fsanitize=address
-#)
-
 add_executable(test_pool test_pool_alloc.cpp)
 
 add_executable(1.01_storage_duration 1.1_storage_duration.cpp)
@@ -63,26 +61,6 @@ add_executable(3.01_unique_ptr 3.1_unique_ptr.cpp)
 add_executable(3.02_shared_ptr 3.2_shared_ptr.cpp)
 add_executable(3.03_cost_model 3.3_cost_model.cpp)
 add_executable(3.04_my_uniqptr 3.4_my_unique_ptr.cpp)
-
-
 add_executable(3.05_my_sharedptr 3.5_my_shared_ptr.cpp)
-if(MSVC)
-    # /W4 is strict warnings, /WX treats warnings as errors (equivalent to -Werror)
-    target_compile_options(3.05_my_sharedptr PRIVATE /W4 /WX)
-else()
-    # For GCC and Clang (Linux / macOS / MinGW)
-    target_compile_options(3.05_my_sharedptr PRIVATE -Wall -Wextra -Wpedantic -Werror)
-endif()
-find_package(Threads REQUIRED)
-target_link_libraries(3.05_my_sharedptr PRIVATE Threads::Threads)
-
-
 add_executable(3.06_my_weakptr 3.6_my_weak_ptr.cpp)
-if (MSVC)
-    target_compile_options(3.06_my_weakptr PRIVATE /W4 /WX)
-else ()
-    target_compile_options(3.06_my_weakptr PRIVATE -Wall -Wextra -Wpedantic -Werror)
-endif ()
-find_package(Threads REQUIRED)
-target_link_libraries(3.06_my_weakptr PRIVATE Threads::Threads)
-
+add_executable(3.07_except_saf 3.7_exception_saftey.cpp)

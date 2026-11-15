@@ -10,32 +10,18 @@ if (MSVC)
 else ()
     add_compile_options(-Wall -Wextra -Wpedantic -Werror)
 endif ()
+
 find_package(Threads REQUIRED)
 link_libraries(Threads::Threads)
 
-
-## Global compiler configuration
-#if(MSVC)
-#    # Correct MSVC syntax for C++26 preview tools
-#    add_compile_options(/std:c++latest)
-#
-#    # Global ASan flags using correct MSVC syntax
-#    add_compile_options(/fsanitize=address /Zi)
-#    add_link_options(/INCREMENTAL:NO)
-#
-#    # Remove conflicting Edit & Continue flags that CLion injecting by default
-#    string(REPLACE "/ZI" "/Zi" CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
-#    string(REPLACE "/ZI" "/Zi" CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG}")
-#else()
-#    # Fallback for GCC/Clang (Linux/macOS)
-#    set(CMAKE_CXX_STANDARD 26)
-#    set(CMAKE_CXX_STANDARD_REQUIRED ON)
-#    add_compile_options(-fsanitize=address -g)
-#    add_link_options(-fsanitize=address)
-#endif()
-
 # Define your executables (ASan is now automatically inherited globally)
 add_executable(Test main.cpp)
+if (MSVC)
+    target_compile_options(Test PRIVATE /Od /WX-)
+else ()
+    target_compile_options(Test PRIVATE -O0 /wd4244)
+endif ()
+
 add_executable(test_pool test_pool_alloc.cpp)
 
 add_executable(1.01_storage_duration "Section 1/1.1_storage_duration.cpp")
@@ -74,3 +60,10 @@ add_executable(4.05_moved_from "Section 4/4.5_moved_from.cpp")
 add_executable(4.06_move_only_noexcept "Section 4/4.6_move_only_noexcept.cpp")
 add_executable(4.07_value_semantics "Section 4/4.7_value_semantics.cpp")
 add_executable(4.08_move_only_function "Section 4/4.8_move_only_function.cpp")
+
+add_executable(5.01_function_templates "Section 5/5.1_function_templates.cpp")
+if (MSVC)
+    target_compile_options(5.01_function_templates PRIVATE /Od /WX-)
+else ()
+    target_compile_options(5.01_function_templates PRIVATE -O0 /wd4244)
+endif ()

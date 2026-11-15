@@ -67,3 +67,5 @@ if (MSVC)
 else ()
     target_compile_options(5.01_function_templates PRIVATE -O0 /wd4244)
 endif ()
+
+add_executable(5.02_deduction "Section 5/5.2_deduction.cpp")

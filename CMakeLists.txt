@@ -70,3 +70,4 @@ endif ()
 
 add_executable(5.02_deduction "Section 5/5.2_deduction.cpp")
 add_executable(5.03_variadic "Section 5/5.3_variadic.cpp")
+add_executable(5.04_concepts "Section 5/5.4_concepts.cpp")

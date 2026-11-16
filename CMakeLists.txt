@@ -23,6 +23,7 @@ else ()
 endif ()
 
 add_executable(test_pool test_pool_alloc.cpp)
+add_executable(swappable_concept swappable_concept.cpp)
 
 add_executable(1.01_storage_duration "Section 1/1.1_storage_duration.cpp")
 add_executable(1.02_padding "Section 1/1.2_padding.cpp")

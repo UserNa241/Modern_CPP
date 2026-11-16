@@ -77,3 +77,5 @@ add_executable(5.06_type_traits "Section 5/5.6_type_traits.cpp")
 add_executable(5.07_constexpr "Section 5/5.7_constexpr.cpp")
 add_executable(5.08_templates_meta "Section 5/5.8_templates_meta.cpp")
 add_executable(5.09_final "Section 5/5.9_Final.cpp")
+
+add_executable(6.01_auto_decltype "Section 6/6.1_auto_decltype.cpp")

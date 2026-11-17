@@ -85,3 +85,8 @@ add_executable(6.04_cpp17_20 "Section 6/6.4_cpp17_20_daily_tools.cpp")
 add_executable(6.05_cpp20_core "Section 6/6.5_cpp20_core.cpp")
 add_executable(6.06_cpp23_core "Section 6/6.6_Cpp23_core.cpp")
 add_executable(6.07_range_views "Section 6/6.7_range_views.cpp")
+
+add_executable(6.8_modules "Section 6/6.8_modules.cpp")
+target_sources(6.8_modules PUBLIC FILE_SET CXX_MODULES FILES
+    "Section 6/module_for_6.8.cppm"
+)

@@ -79,3 +79,4 @@ add_executable(5.08_templates_meta "Section 5/5.8_templates_meta.cpp")
 add_executable(5.09_final "Section 5/5.9_Final.cpp")
 
 add_executable(6.01_auto_decltype "Section 6/6.1_auto_decltype.cpp")
+add_executable(6.02_lambdas "Section 6/6.2_lambdas.cpp")

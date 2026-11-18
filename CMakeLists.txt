@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 4.4)
-project(Test)
+project(Modern_CPP)
 
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -14,13 +14,8 @@ endif ()
 find_package(Threads REQUIRED)
 link_libraries(Threads::Threads)
 
-# Define your executables (ASan is now automatically inherited globally)
+# Define your executables
 add_executable(Test main.cpp)
-if (MSVC)
-    target_compile_options(Test PRIVATE /Od /WX-)
-else ()
-    target_compile_options(Test PRIVATE -O0 /wd4244)
-endif ()
 
 add_executable(test_pool test_pool_alloc.cpp)
 add_executable(swappable_concept swappable_concept.cpp)
@@ -35,6 +30,7 @@ add_executable(1.07_bit_tools "Section 1/1.7_bit_tools.cpp")
 add_executable(1.08_placement_new "Section 1/1.8_placement_new.cpp")
 add_executable(1.09_false_sharing "Section 1/1.9_false_sharing.cpp")
 add_executable(1.10_virtual_memory "Section 1/1.10_virtual_memory.cpp")
+
 add_executable(2.01_RAII "Section 2/2.1_RAII.cpp")
 add_executable(2.02_ro5 "Section 2/2.2_rule_of_5.cpp")
 add_executable(2.03_exception_saftey "Section 2/2.3_exception_saftey.cpp")
@@ -44,6 +40,7 @@ add_executable(2.06_scopeguard "Section 2/2.6_scope_guard.cpp")
 add_executable(2.07_mutexwrapper "Section 2/2.7_mutex_wrapper.cpp")
 add_executable(2.08_RAIIxmove "Section 2/2.8_RAIIxmove.cpp")
 add_executable(2.09_partial_const "Section 2/2.9_partial_construction.cpp")
+
 add_executable(3.01_unique_ptr "Section 3/3.1_unique_ptr.cpp")
 add_executable(3.02_shared_ptr "Section 3/3.2_shared_ptr.cpp")
 add_executable(3.03_cost_model "Section 3/3.3_cost_model.cpp")
@@ -53,6 +50,7 @@ add_executable(3.06_my_weakptr "Section 3/3.6_my_weak_ptr.cpp")
 add_executable(3.07_except_saf "Section 3/3.7_exception_saftey.cpp")
 add_executable(3.08_type_eraser "Section 3/3.8_type_eraser.cpp")
 add_executable(3.09_int_atomics "Section 3/3.9_intrusive_atomics.cpp")
+
 add_executable(4.01_rvalue_refs "Section 4/4.1_rvalue_refs.cpp")
 add_executable(4.02_move_collapse "Section 4/4.2_move_collapsing.cpp")
 add_executable(4.03_perfect_forwarding "Section 4/4.3_perfect_forwarding.cpp")
@@ -64,9 +62,9 @@ add_executable(4.08_move_only_function "Section 4/4.8_move_only_function.cpp")
 
 add_executable(5.01_function_templates "Section 5/5.1_function_templates.cpp")
 if (MSVC)
-    target_compile_options(5.01_function_templates PRIVATE /Od /WX-)
+    target_compile_options(5.01_function_templates PRIVATE /Od /WX- /wd4244)
 else ()
-    target_compile_options(5.01_function_templates PRIVATE -O0 /wd4244)
+    target_compile_options(5.01_function_templates PRIVATE -O0 -Wno-error -Wno-conversion)
 endif ()
 
 add_executable(5.02_deduction "Section 5/5.2_deduction.cpp")
@@ -86,9 +84,10 @@ add_executable(6.05_cpp20_core "Section 6/6.5_cpp20_core.cpp")
 add_executable(6.06_cpp23_core "Section 6/6.6_Cpp23_core.cpp")
 add_executable(6.07_range_views "Section 6/6.7_range_views.cpp")
 
-add_executable(6.8_modules "Section 6/6.8_modules.cpp")
-target_sources(6.8_modules PUBLIC FILE_SET CXX_MODULES FILES
-    "Section 6/module_for_6.8.cppm"
+add_executable(6.08_modules "Section 6/6.8_modules.cpp")
+target_sources(6.08_modules PUBLIC FILE_SET CXX_MODULES FILES
+        "Section 6/module_for_6.8.cppm"
 )
 
-add_executable(6.9_coroutines "Section 6/6.9_coroutines.cpp")
+add_executable(6.09_coroutines "Section 6/6.9_coroutines.cpp")
+add_executable(6.10_advanced "Section 6/6.10_advanced_ideas.cpp")

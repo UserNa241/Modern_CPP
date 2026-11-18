@@ -90,3 +90,5 @@ add_executable(6.8_modules "Section 6/6.8_modules.cpp")
 target_sources(6.8_modules PUBLIC FILE_SET CXX_MODULES FILES
     "Section 6/module_for_6.8.cppm"
 )
+
+add_executable(6.9_coroutines "Section 6/6.9_coroutines.cpp")
